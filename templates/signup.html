@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../../../favicon.ico">-->
+
+    <title>Signup Dictator</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/signup.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+
+    <form class="form-signin" method="post" action="{{ url_for('signup') }}">
+        <h2 class="form-signin-heading">Sign Up</h2>
+        <input type="text" id="userName" name="userName" class="form-control" placeholder="Username" required autofocus>
+
+        <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="Email address" required
+               autofocus>
+
+        <input type="email" id="inputEmailR" name="inputEmailR" class="form-control" placeholder="Email address (Again)"
+               required
+               autofocus>
+
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password"
+               required>
+
+        <input type="password" id="inputPasswordR" name="inputPasswordR" class="form-control"
+               placeholder="Password (Again)" required>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+    </form>
+
+</div> <!-- /container -->
+</body>
+</html>
