@@ -88,10 +88,41 @@ cur.execute("""CREATE TABLE definition
  FOREIGN KEY(definer_user) REFERENCES "user"(user_id));""")
 
 cur.execute("""CREATE TABLE post
-(post_id		INT,
+(post_id		  INT,
  rate_value		INT,
  PRIMARY KEY(post_id),
  FOREIGN KEY(post_id) references definition(definition_id));
+""")
+cur.execute("""CREATE TABLE enter
+(topic_id		INT,
+ subtopic_name		VARCHAR(256),
+ post_id    INT,
+ PRIMARY KEY(subtopic_name,post_id),
+ FOREIGN KEY(topic_id) references topic(topic_id),
+ FOREIGN KEY(subtopic_name) references subtopic(subtopic_name),
+ FOREIGN KEY(post_id) references post(post_id));
+""")
+cur.execute("""CREATE TABLE rate
+(user_id		INT,
+ post_id		INT,
+ vote			  INT,
+ PRIMARY KEY(user_id, post_id),
+ FOREIGN KEY(user_id) references user(user_id),
+ FOREIGN KEY(post_id) references post(post_id));
+""")
+cur.execute("""CREATE TABLE comment
+(comment_id		INT,
+ post_id		  INT,
+ PRIMARY KEY(comment_id),
+ FOREIGN KEY(comment_id) REFERENCES definition(definiton_id),
+ FOREIGN KEY(post_id) REFERENCES post(post_id));
+""")
+cur.execute("""CREATE TABLE reply
+(comment_id		INT,
+ replied_comment		INT,
+ PRIMARY KEY(comment_id),
+ FOREIGN KEY(comment_id) REFERENCES comment(comment_id),
+ FOREIGN KEY(replied_comment) REFERENCES post(post_id));
 """)
 
 cur.execute("""COMMIT;""")
