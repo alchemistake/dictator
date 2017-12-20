@@ -89,7 +89,8 @@ cur.execute("""CREATE TABLE definition
 
 cur.execute("""CREATE TABLE post
 (post_id		  INT,
- rate_value		INT,
+ like_value		INT,
+ dislike_value INT,
  PRIMARY KEY(post_id),
  FOREIGN KEY(post_id) references definition(definition_id));
 """)
