@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import psycopg2
 from flask import Flask, request, redirect, flash, url_for, render_template
-from flask_login import LoginManager, login_required, logout_user, current_user, UserMixin
+from flask_login import LoginManager, login_required, logout_user, current_user, UserMixin, login_user
 
 conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
 cur = conn.cursor()
@@ -22,11 +20,16 @@ class User(UserMixin):
 
     @classmethod
     def get(cls, email):
-        cur.execute('SELECT * FROM "user" WHERE user_email="' + email + '";')
+        cur.execute("SELECT * FROM \"user\" WHERE user_email=%s;", (email,))
         user = cur.fetchone()
         if user is None:
             return None
         return User(email, user)
+
+
+@login_manager.user_loader
+def load_user(email):
+    return User.get(email)
 
 
 @app.route('/')
@@ -37,8 +40,10 @@ def root():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        print User.get(request.form["email"])
-        print request.form["email"], request.form["pass"]
+        user = User.get(request.form["email"])
+        if user is not None:
+            login_user(user)
+            return redirect(url_for("root"))
     return render_template("login.html")
 
 
@@ -48,7 +53,7 @@ def signup():
         if request.form["inputEmail"] == request.form["inputEmailR"] and request.form["inputPasswordR"] == request.form[
             "inputPassword"]:
             cur.execute(
-                'INSERT INTO "user"("user_nickname","user_email","user_password","user_role") VALUES ("%s", "%s", "%s", 1);COMMIT;',
+                'INSERT INTO "user"(user_nickname,user_email,user_password,user_role) VALUES (%s, %s, %s, 1);COMMIT;',
                 (request.form["userName"], request.form["inputEmail"], request.form["inputPassword"]))
             return redirect(url_for("root"))
     return render_template("signup.html")
@@ -56,34 +61,37 @@ def signup():
 
 @app.route('/topic/<topic_id>')
 def topic(topic_id):
-    pass
+    return render_template("topic.html", topic_id=topic_id, subtopics=[])
 
 
-@app.route('/profile/<profile_id>')
-def profile(profile_id):
-    pass
-
-
-@app.route('/messages')
-@login_required
-def messages():
-    pass
-
-
-@app.route('/following')
-@login_required
-def following():
-    pass
+#
+#
+# @app.route('/profile/<profile_id>')
+# def profile(profile_id):
+#     pass
+#
+#
+# @app.route('/messages')
+# @login_required
+# def messages():
+#     pass
+#
+#
+# @app.route('/following')
+# @login_required
+# def following():
+#     pass
 
 
 @app.route('/logout')
 @login_required
-def logout_user():
+def logout():
     logout_user()
     return redirect(url_for("root"))
 
 
 if __name__ == '__main__':
     app.debug = True
+    app.secret_key = "dictatordictator"
     app.run()  # Local Host
     # app.run(host='0.0.0.0')  # Local IP
