@@ -6,4 +6,4 @@
 ## Design
 [Design report can be reached here](https://github.com/alchemistake/dictator/raw/master/docs/Design%20Document.pdf)
 ## Final
-[Final report can be reached here (NOT ACTIVE YET)](www.google.com)
+[Final report can be reached here](https://github.com/alchemistake/dictator/blob/master/docs/Final%20Report.pdf)
