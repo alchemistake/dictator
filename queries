@@ -1,0 +1,54 @@
+Database Features 
+Secondary Indices: give your statement or GUI snapshot (i.e., from MSSQL server index creation window) that explicitly shows what indices are created on what field of the tables.
+During the demo, we will verify the existence of these indices either using DBMS GUI or commands (e.g, MySQL’s “Show Index” command).
+
+CREATE UNIQUE INDEX user_name_index ON user(user_name);
+CREATE UNIQUE INDEX topic_name_index ON topic(topic_name);
+CREATE UNIQUE INDEX definition_id_index ON definition(definition_id);
+
+
+Reports: Two functional and reasonably complex reports. 
+
+Most Interactive Topic:  
+
+WITH latest_topics AS(
+SELECT * 
+FROM topic
+WHERE topic_date = (SELECT MAX(topic_date)
+ FROM topic), topic_rates AS(
+SELECT topic_id, SUM(like_value+dislike_value) AS sum_rate 
+FROM latest_topics NATURAL JOIN post
+GROUP BY topic_id
+)
+SELECT * 
+FROM  topic_rates NATURAL JOIN topic
+WHERE sum_rate = (SELECT MAX(sum_rate) FROM topic_rates)
+
+Most Interactive User:  
+
+WITH topic_count AS(
+SELECT user_id, COUNT(*) AS topic_creator_count
+FROM user NATURAL JOIN topic
+WHERE user_id = creator_user
+GROUP BY user_id), definition_count AS(
+SELECT user_id, COUNT(*) AS definer_count
+FROM user NATURAL JOIN definition
+WHERE user_id = definer_user
+GROUP BY user_id)
+SELECT user_id, MAX(topic_creator_count+definer_count)
+FROM topic_count NATURAL JOIN definiton_count
+GROUP BY user_id
+
+
+Triggers:
+
+create trigger rate_update after insert on rate
+referencing new row as new_row
+referencing old row as old_row
+for each row
+	begin 
+		update post
+		set rate_value =old_row.rate_value + new_row.vote	
+		where post_id =old_row.post_id
+	end
+
