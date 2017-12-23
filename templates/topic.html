@@ -35,7 +35,7 @@
                 <li><a href="#">st</a></li>
                 {% endfor %}
             </ul>
-            {% if current_user.data[4] >= 1%}
+            {% if current_user.is_authenticated and current_user.data[4] >= 1%}
             <div class="input-group">
                 <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
                 <div class="input-group-btn">

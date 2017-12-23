@@ -61,14 +61,16 @@ def signup():
 
 @app.route('/topic/<topic_id>')
 def topic(topic_id):
-    return render_template("topic.html", topic_id=topic_id, subtopics=[])
+    return render_template("topic.html", active_topic=topic_id, topics=["asd", "qwe", "zxc"], topic_id=topic_id,
+                           subtopics=[])
 
 
-#
-#
-# @app.route('/profile/<profile_id>')
-# def profile(profile_id):
-#     pass
+@app.route('/profile/<profile_id>')
+def profile(profile_id):
+    return render_template("profile.html", profile_name=profile_id, profile_id=profile_id,
+                           topics=["asd", "qwe", "qweqwe"])
+
+
 #
 #
 # @app.route('/messages')
@@ -81,6 +83,12 @@ def topic(topic_id):
 # @login_required
 # def following():
 #     pass
+#
+@app.route('/ban', methods=["POST"])
+@login_required
+def ban():
+    cur.execute("insert into block values (%s,%s)", (current_user.data[0], int(request.form["to_ban"])))
+    return redirect(url_for("root"))
 
 
 @app.route('/logout')
