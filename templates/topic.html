@@ -29,19 +29,20 @@
         {% include  'sidebar.html' %}
 
         <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-            <h1>{{ topic_id }}</h1>
+            <h1>{{ active_topic }}</h1>
             <ul>
                 {% for st in subtopics %}
-                <li><a href="#">st</a></li>
+                <li><a href="{{ url_for("subtopic", topic_id=topic_id, subtopic_name=st[1]) }}">{{ st[1] }}</a></li>
                 {% endfor %}
             </ul>
             {% if current_user.is_authenticated and current_user.data[4] >= 1%}
-            <div class="input-group">
-                <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
+            <form class="input-group" action="{{ url_for("add_subtopic") }}" method="post">
+                <input type="text" hidden value="{{ topic_id }}" name="topic_id">
+                <input type="text" name="subtopic" class="form-control" aria-label="Text input with segmented button dropdown">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-primary">Add Subtopic</button>
+                    <input type=submit class="btn btn-primary" value="Add Subtopic">
                 </div>
-            </div>
+            </form>
             {% endif %}
         </main>
     </div>

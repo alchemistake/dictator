@@ -3,24 +3,8 @@ import psycopg2
 conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
 cur = conn.cursor()
 
-cur.execute("""SELECT table_name
-  FROM information_schema.tables
- WHERE table_schema='public'
-   AND table_type='BASE TABLE';""")
-rows = cur.fetchall()
-delete = []
-while len(rows):
-    print rows
-    for r in rows:
-        try:
-            cur.execute('DROP TABLE "' + r[0] + '";')
-            delete.append(r)
-        except Exception as e:
-            print e
-            cur.execute("COMMIT;")
-    for d in delete:
-        rows.remove(d)
-    delete = []
+cur.execute("""DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;""")
 
 cur.execute("""create table "user" 
 (user_id serial primary key ,
@@ -56,7 +40,7 @@ cur.execute("""CREATE TABLE directMessage
  FOREIGN KEY(sender_user) REFERENCES "user"(user_id), 
  FOREIGN KEY(receiver_user) REFERENCES "user"(user_id));""")
 cur.execute("""CREATE TABLE topic
-(topic_id		INT ,
+(topic_id		serial ,
  topic_name		VARCHAR(256) NOT NULL,
  topic_date 	DATE NOT NULL,
  creator_user	INT NOT NULL,
@@ -70,7 +54,7 @@ cur.execute("""CREATE TABLE subtopic
  FOREIGN KEY(topic_id) REFERENCES topic(topic_id),
  FOREIGN KEY(adder_user) REFERENCES "user"(user_id));""")
 cur.execute("""CREATE TABLE definition
-(definition_id	  INT ,
+(definition_id	  serial ,
  definition_date  DATE NOT NULL,
  definer_user 	  INT NOT NULL,
  definition		  VARCHAR(256) NOT NULL,

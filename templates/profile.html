@@ -34,7 +34,7 @@
                 <button type="button" class="btn btn-primary mr-sm-2" onclick="show_posting(this)">Post</button>
                 <form style="display:inline;" action="{{ url_for('ban') }}" method="post"><input type="text" name="to_ban" value="{{ profile_id }}" hidden><input class="btn btn-danger mr-sm-2" type="submit" value="Block"/>
                 </form>
-                {% if current_user.data[4] >= 2 %}
+                {% if current_user.data[4] >= 1 %}
                     <button type="button" class="btn btn-warning mr-sm-2">Promote</button>{% endif %}
                 <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
             {% endif %}</h1>
