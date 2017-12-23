@@ -31,52 +31,12 @@
 
         <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
             <h1>Users: {{ profile_name }}{% if current_user.is_authenticated %}
-                <button type="button" class="btn btn-primary mr-sm-2" onclick="show_posting(this)">Post</button>
                 <form style="display:inline;" action="{{ url_for('ban') }}" method="post"><input type="text" name="to_ban" value="{{ profile_id }}" hidden><input class="btn btn-danger mr-sm-2" type="submit" value="Block"/>
                 </form>
                 {% if current_user.data[4] >= 1 %}
                     <button type="button" class="btn btn-warning mr-sm-2">Promote</button>{% endif %}
                 <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
             {% endif %}</h1>
-
-            <div id="posting" style="display: none;">
-                <div class="card">
-                    <div class="card-body" contenteditable="true">
-                        Write your post here!
-                    </div>
-                    <div class="card-header">
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-primary">Post</button>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-                <br/>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-            <br/>
         </main>
     </div>
 </div>
@@ -94,11 +54,4 @@
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
 
-<script>
-    function show_posting(button) {
-        document.getElementById("posting").style.display = "";
-        button.disabled = true;
-        console.log(this);
-    }
-</script>
 </html>

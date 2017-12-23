@@ -3,7 +3,8 @@
         {% if current_user.is_authenticated and current_user.data[4] >= 1 %}
             <li class="nav-item">
                 <form class="input-group" action="{{ url_for('add_topic') }}" method="post">
-                    <input name="topic" type="text" class="form-control" aria-label="Text input with segmented button dropdown">
+                    <input name="topic" type="text" class="form-control"
+                           aria-label="Text input with segmented button dropdown">
                     <div class="input-group-btn">
                         <input class="btn btn-primary" type="submit" value="Add Topic"/>
                     </div>
@@ -12,14 +13,16 @@
         {% endif %}
         {% if active_topic %}
             <li class="nav-item">
-                <a class="nav-link active" href="{{ url_for('topic', topic_id=active_topic) }}">{{ active_topic }}<span
+                <a class="nav-link active" href="{{ url_for('topic', topic_id=active_id) }}">{{ active_topic }}<span
                         class="sr-only">(current)</span></a>
             </li>
         {% endif %}
         {% for t in topics %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('topic', topic_id=t) }}">{{ t }}</a>
-            </li>
+            {% if t[1] != "USERS" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('topic', topic_id=t[0]) }}">{{ t[1] }}</a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
 </nav>

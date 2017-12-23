@@ -32,17 +32,20 @@
             <h1>{{ active_topic }}</h1>
             <ul>
                 {% for st in subtopics %}
-                <li><a href="{{ url_for("subtopic", topic_id=topic_id, subtopic_name=st[1]) }}">{{ st[1] }}</a></li>
+                    <li>
+                        <a href="{{ url_for("subtopic", topic_id=topic_id, subtopic_name=st[1]) }}">{{ st[1] }}</a>
+                    </li>
                 {% endfor %}
             </ul>
-            {% if current_user.is_authenticated and current_user.data[4] >= 1%}
-            <form class="input-group" action="{{ url_for("add_subtopic") }}" method="post">
-                <input type="text" hidden value="{{ topic_id }}" name="topic_id">
-                <input type="text" name="subtopic" class="form-control" aria-label="Text input with segmented button dropdown">
-                <div class="input-group-btn">
-                    <input type=submit class="btn btn-primary" value="Add Subtopic">
-                </div>
-            </form>
+            {% if topic_id > 1 and current_user.is_authenticated and current_user.data[4] >= 1 %}
+                <form class="input-group" action="{{ url_for("add_subtopic") }}" method="post">
+                    <input type="text" hidden value="{{ topic_id }}" name="topic_id">
+                    <input type="text" name="subtopic" class="form-control"
+                           aria-label="Text input with segmented button dropdown">
+                    <div class="input-group-btn">
+                        <input type=submit class="btn btn-primary" value="Add Subtopic">
+                    </div>
+                </form>
             {% endif %}
         </main>
     </div>

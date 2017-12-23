@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import datetime
 
 conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
 cur = conn.cursor()

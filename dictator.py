@@ -35,7 +35,9 @@ def load_user(email):
 
 @app.route('/')
 def root():
-    return render_template("index.html", active_topic=None, topics=["asd", "qwe", "zxc"])
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("index.html", topics=topics)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -66,15 +68,20 @@ def topic(topic_id):
     topic = cur.fetchone()
     cur.execute("""select * from subtopic where topic_id=%s;""", (topic_id,))
     subtopics = cur.fetchall()
-    print subtopics
-    return render_template("topic.html", active_topic=topic[1], topics=["asd", "qwe", "zxc"], topic_id=topic[0],
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("topic.html", active_id=topic[0], active_topic=topic[1], topics=topics, topic_id=topic[0],
                            subtopics=subtopics)
 
 
 @app.route('/profile/<profile_id>')
 def profile(profile_id):
-    return render_template("profile.html", profile_name=profile_id, profile_id=profile_id,
-                           topics=["asd", "qwe", "qweqwe"])
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    cur.execute("select * from \"user\" where user_id=%s;", profile_id)
+    u = cur.fetchone()
+    return render_template("profile.html", profile_name=u[1], profile_id=profile_id,
+                           topics=topics)
 
 
 @app.route('/subtopic/<topic_id>-<subtopic_name>')
@@ -83,8 +90,21 @@ def subtopic(topic_id, subtopic_name):
         """select * from definition,post,"user" where definition_id=post_id AND definer_user=user_id AND definition_id in (select post_id from Enter where topic_id=%s and subtopic_name=%s)""",
         (topic_id, subtopic_name))
     defs = cur.fetchall()
-    print defs
-    return render_template("subtopic.html", topic_id=topic_id, subtopic_name=subtopic_name, defs=defs)
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("subtopic.html", topic_id=topic_id, subtopic_name=subtopic_name, defs=defs, topics=topics)
+
+
+@app.route('/post/<post_id>')
+def post(post_id):
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+
+    cur.execute(
+        """select * from definition,post,"user" where post_id=%s AND definition_id=post_id AND definer_user=user_id""",
+        (post_id,))
+    d = cur.fetchone()
+    return render_template("comment.html", topics=topics, d=d)
 
 
 #
@@ -136,6 +156,23 @@ def add_def():
                 (datetime.now(), request.form["text"], current_user.data[0], request.form["topic_id"],
                  request.form["subtopic_name"]))
     return ""
+
+
+@app.route('/like', methods=["POST"])
+@login_required
+def like():
+    print "asdasdasd"
+    cur.execute("""UPDATE post SET like_value = like_value + 1 WHERE post_id = %s;COMMIT;""", (request.form["id"],))
+    return ""
+
+
+@app.route('/dislike', methods=["POST"])
+@login_required
+def dislike():
+    cur.execute("""UPDATE post SET dislike_value = dislike_value + 1 WHERE post_id = %s;COMMIT;""",
+                (request.form["id"],))
+    return ""
+
 
 @app.route('/logout')
 @login_required

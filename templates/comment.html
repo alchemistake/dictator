@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../../../favicon.ico">--->
+
+    <title>Dictator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/index.css" rel="stylesheet">
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+{% if current_user.is_authenticated %}
+    {% include  'navbar_logged_in.html' %}
+{% else %}
+    {% include  'navbar_not_logged_in.html' %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include  'sidebar.html' %}
+
+        <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+            <div class="card">
+                <div class="card-body">{{ d[3].strip() }}</div>
+                <div class="card-header">
+                    <div class="pull-left">
+                        <a onclick="like({{ d[0] }})"><i class="fa fa-thumbs-up"
+                                                         aria-hidden="true"></i></a> {{ d[5] }}
+                        <a onclick="dislike({{ d[0] }})"><i class="fa fa-thumbs-down"
+                                                            aria-hidden="true"></i></a> {{ d[6] }}
+                    </div>
+                    <div class="pull-right">
+                        <p class="font-italic text-right">{{ d[1] }} <a
+                                href="{{ url_for("profile", profile_id=d[2]) }}"
+                                class="ml-sm-2 badge badge-warning">{{ d[9] }}</a></p>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary">Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+                <div class="card-body">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
+                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
+                    porta magna. Nullam semper elit in turpis dictum aliquet.
+                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
+                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
+                    vel, interdum id orci. Mauris nec felis et lorem
+                    faucibus imperdiet.
+                </div>
+                <div class="card-header">
+                    <div class="pull-left">
+                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
+                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
+                    </div>
+                    <div class="pull-right">
+                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
+                                                                              class="ml-sm-2 badge badge-warning">mr.
+                            sir alchemistake</a></p>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary">Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="col-11 offset-1">
+                    <div class="card">
+                        <div class="card-body">
+                            Nam sem lectus, mollis eu eros sit amet, vulputate consequat sem. Nunc non nibh
+                            pellentesque, elementum velit ut, tincidunt urna.
+                        </div>
+                        <div class="card-header">
+                            <div class="pull-right">
+                                <p class="font-italic text-right">24.08.2006 18:23 <a href="#"
+                                                                                      class="ml-sm-2 badge badge-warning">rümeyza
+                                    reiz</a></p>
+                            </div>
+                            <div class="clearfix"></div>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       aria-label="Text input with segmented button dropdown">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary">Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="col-10 offset-2">
+                    <div class="card">
+                        <div class="card-body">
+                            Nam sem lectus, mollis eu eros sit amet, vulputate consequat sem. Nunc non nibh
+                            pellentesque, elementum velit ut, tincidunt urna.
+                        </div>
+                        <div class="card-header">
+                            <div class="pull-right">
+                                <p class="font-italic text-right">24.08.2006 18:23 <a href="#"
+                                                                                      class="ml-sm-2 badge badge-warning">arif
+                                    basghan</a></p>
+                            </div>
+                            <div class="clearfix"></div>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       aria-label="Text input with segmented button dropdown">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary">Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="col-11 offset-1">
+                    <div class="card">
+                        <div class="card-body">
+                            Nam sem lectus, mollis eu eros sit amet, vulputate consequat sem. Nunc non nibh
+                            pellentesque, elementum velit ut, tincidunt urna.
+                        </div>
+                        <div class="card-header">
+                            <div class="pull-right">
+                                <p class="font-italic text-right">24.08.2006 18:23 <a href="#"
+                                                                                      class="ml-sm-2 badge badge-warning">serdar</a>
+                                </p>
+                            </div>
+                            <div class="clearfix"></div>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control"
+                                       aria-label="Text input with segmented button dropdown">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary">Comment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script>
+    window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')
+</script>
+<script src="../static/js/popper.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+</body>
+
+</html>
