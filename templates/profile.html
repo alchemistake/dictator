@@ -50,6 +50,17 @@
                     <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
                 </a>
             {% endif %}</h1>
+
+            {% if current_user.is_authenticated and current_user.data[0] == profile_id|int %}
+                <h2>Change Password</h2>
+                <form class="input-group" action="{{ url_for("change_pass") }}" method="post">
+                    <input type="text" name="password" class="form-control"
+                           aria-label="Text input with segmented button dropdown">
+                    <div class="input-group-btn">
+                        <input type=submit class="btn btn-primary" value="Change">
+                    </div>
+                </form>
+            {% endif %}
         </main>
     </div>
 </div>

@@ -37,7 +37,11 @@ def load_user(email):
 def root():
     cur.execute("select * from topic order by topic_id desc limit 10;")
     topics = cur.fetchall()
-    return render_template("index.html", topics=topics)
+
+    cur.execute("""select * from definition,post,"user" where post_id=definition_id and definer_user=user_id;""")
+    posts = cur.fetchall()
+    print posts
+    return render_template("index.html", topics=topics, posts=posts)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -312,6 +316,14 @@ where topic_name like %s;""", ('%' + request.form["query"] + '%',))
     topics = cur.fetchall()
 
     return render_template("search.html", topics=topics, result=result)
+
+
+@app.route("/change_pass", methods=["POST"])
+@login_required
+def change_pass():
+    cur.execute("""update "user" set user_password=%s where user_id=%s;commit;""",
+                (request.form["password"], current_user.data[0]))
+    return redirect(url_for("logout"))
 
 
 if __name__ == '__main__':

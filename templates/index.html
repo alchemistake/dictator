@@ -29,169 +29,27 @@
 <div class="container-fluid">
     <div class="row">
         {% include  'sidebar.html' %}
-        <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
-            <h1>Popular Topic</h1>
 
+        {% for p in posts %}
+            <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
             <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
+                <div class="card-body" onclick="location.href='{{ url_for("post", post_id=p[0]) }}';">{{ p[3].strip() }}
                 </div>
                 <div class="card-header">
                     <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
+                        <i class="fa fa-thumbs-up" aria-hidden="true"></i>{{ p[5] }}
+                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> {{ p[6] }}
                     </div>
                     <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
+                        <p class="font-italic text-right">{{ p[1] }}<a href="{{ url_for("profile", profile_id=p[7]) }}"
+                                                                              class="ml-sm-2 badge badge-warning">{{ p[8] }}</a></p>
                     </div>
                     <div class="clearfix"></div>
                 </div>
             </div>
 
             <br/>
-            <h1>Popular Topic</h1>
-
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-
-            <br/>
-            <h1>Popular Topic</h1>
-
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-
-            <br/>
-            <h1>Popular Topic</h1>
-
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-
-            <br/>
-            <h1>Popular Topic</h1>
-
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-
-            <br/>
-            <h1>Popular Topic</h1>
-
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-
-            <br/>
+        {% endfor %}
         </main>
     </div>
 </div>
