@@ -94,10 +94,18 @@
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
 <script>
-    function send_comment(id) {
-        $.post("{{ url_for("comment") }}", {
-            comment: document.getElementById(id).value,
-            post_id: id
+
+    function like(post) {
+        jQuery.post("{{ url_for("like") }}", {
+            id: post
+        }, function () {
+            location.reload();
+        });
+    }
+
+    function dislike(post) {
+        jQuery.post("{{ url_for("dislike") }}", {
+            id: post
         }, function () {
             location.reload();
         });

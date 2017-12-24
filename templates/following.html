@@ -54,7 +54,6 @@
         </main>
     </div>
 </div>
-
 <!-- Bootstrap core JavaScript
   ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -64,5 +63,23 @@
 <script src="../static/js/popper.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
+<script>
+
+    function like(post) {
+        jQuery.post("{{ url_for("like") }}", {
+            id: post
+        }, function () {
+            location.reload();
+        });
+    }
+
+    function dislike(post) {
+        jQuery.post("{{ url_for("dislike") }}", {
+            id: post
+        }, function () {
+            location.reload();
+        });
+    }
+</script>
 
 </html>

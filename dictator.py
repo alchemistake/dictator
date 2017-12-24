@@ -1,7 +1,7 @@
 import psycopg2
 from flask import Flask, request, redirect, flash, url_for, render_template
 from flask_login import LoginManager, login_required, logout_user, current_user, UserMixin, login_user
-from datetime import datetime
+from datetime import datetime, date
 
 conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
 cur = conn.cursor()
@@ -40,7 +40,6 @@ def root():
 
     cur.execute("""select * from definition,post,"user" where post_id=definition_id and definer_user=user_id;""")
     posts = cur.fetchall()
-    print posts
     return render_template("index.html", topics=topics, posts=posts)
 
 
@@ -306,16 +305,29 @@ def report():
 
 @app.route("/search", methods=["POST"])
 def search():
-    cur.execute("""select * 
-from topic
-where topic_name like %s;""", ('%' + request.form["query"] + '%',))
+    cur.execute("""select * from topic where topic_name like %s;""", ('%' + request.form["query"] + '%',))
     result = cur.fetchall()
-    print result
 
     cur.execute("select * from topic order by topic_id desc limit 10;")
     topics = cur.fetchall()
 
     return render_template("search.html", topics=topics, result=result)
+
+
+@app.route("/a_search", methods=["GET", "POST"])
+def a_search():
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+
+    if request.method == "POST":
+        cur.execute("""select * from topic where topic_date BETWEEN %s and %s;""", (
+        date(int(request.form["start_y"]), int(request.form["start_m"]), int(request.form["start_d"])),
+        date(int(request.form["end_y"]), int(request.form["end_m"]), int(request.form["end_d"]))))
+        result = cur.fetchall()
+
+        return render_template("search.html", topics=topics, result=result)
+
+    return render_template("advanced_search.html", topics=topics)
 
 
 @app.route("/change_pass", methods=["POST"])
