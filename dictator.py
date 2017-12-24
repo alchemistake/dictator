@@ -80,8 +80,12 @@ def profile(profile_id):
     topics = cur.fetchall()
     cur.execute("select * from \"user\" where user_id=%s;", profile_id)
     u = cur.fetchone()
+    if current_user.is_authenticated:
+        cur.execute("select * from follow where follower=%s and followed=%s", (current_user.data[0], profile_id))
+        f = cur.fetchone()
+        print f
     return render_template("profile.html", profile_name=u[1], profile_id=profile_id,
-                           topics=topics)
+                           topics=topics, f=f)
 
 
 @app.route('/subtopic/<topic_id>-<subtopic_name>')
@@ -148,7 +152,11 @@ def dm(id):
 @app.route('/following')
 @login_required
 def following():
-    return ""
+    cur.execute("""select *
+from definition,post,"user" where definition_id=post_id and user_id=definer_user and definer_user in (select followed from follow where follower=%s) order by definition_id desc""",
+                (current_user.data[0],))
+    defs = cur.fetchall()
+    return render_template("following.html", defs=defs)
 
 
 @app.route('/ban', methods=["POST"])
@@ -215,11 +223,46 @@ def comment():
     return ""
 
 
+@app.route("/follow", methods=["POST"])
+@login_required
+def follow():
+    cur.execute("""insert into follow values(%s,%s);COMMIT;""",
+                (current_user.data[0], request.form["id"]))
+    return ""
+
+
+@app.route("/unfollow", methods=["POST"])
+@login_required
+def unfollow():
+    cur.execute("""DELETE from follow where follower=%s and followed=%s;COMMIT;""",
+                (current_user.data[0], request.form["id"]))
+    return ""
+
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("root"))
+
+
+@app.route('/report')
+def report():
+    cur.execute("""WITH latest_topics AS (SELECT * FROM topic WHERE topic_date = (SELECT MAX (topic_date) FROM topic)),
+                        topic_rates AS (SELECT topic_id, SUM(like_value+dislike_value) AS sum_rate FROM latest_topics NATURAL JOIN post GROUP BY topic_id)
+                        SELECT * FROM  topic_rates NATURAL JOIN topic WHERE sum_rate = (SELECT MAX(sum_rate) FROM topic_rates)""")
+    most_interactive_topic = cur.fetchone()
+
+    cur.execute("""WITH topic_count AS(SELECT user_id, COUNT(*) AS topic_creator_count FROM "user" NATURAL JOIN topic WHERE user_id = creator_user GROUP BY user_id)
+                  , definition_count AS(SELECT user_id, COUNT(*) AS definer_count FROM "user" NATURAL JOIN definition WHERE user_id = definer_user GROUP BY user_id)
+                  SELECT user_id, MAX(topic_creator_count+definer_count) FROM topic_count NATURAL JOIN definition_count GROUP BY user_id""")
+    most_interactive_user = cur.fetchone()
+
+    cur.execute("""SELECT * from "user" where user_id=%s""", (most_interactive_user[0],))
+    most_interactive_user = cur.fetchone()
+
+    return "Most interactive topic: " + str(most_interactive_topic[2]) + " <br/>Most interactive User: " + str(
+        most_interactive_user[1])
 
 
 if __name__ == '__main__':

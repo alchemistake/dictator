@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../../../favicon.ico">--->
+
+    <title>Dictator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/index.css" rel="stylesheet">
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+{% if current_user.is_authenticated %}
+    {% include  'navbar_logged_in.html' %}
+{% else %}
+    {% include  'navbar_not_logged_in.html' %}
+{% endif %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include  'sidebar.html' %}
+
+        <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+            {% for d in defs %}
+                <div class="card">
+                    <div class="card-body" onclick="location.href='{{ url_for("post", post_id=d[0]) }}';">{{ d[3].strip() }}</div>
+                    <div class="card-header">
+                        <div class="pull-left">
+                            <a onclick="like({{ d[0] }})"><i class="fa fa-thumbs-up"
+                                                             aria-hidden="true"></i></a> {{ d[5] }}
+                            <a onclick="dislike({{ d[0] }})"><i class="fa fa-thumbs-down"
+                                                                aria-hidden="true"></i></a> {{ d[6] }}
+                        </div>
+                        <div class="pull-right">
+                            <p class="font-italic text-right">{{ d[1] }} <a
+                                    href="{{ url_for("profile", profile_id=d[2]) }}"
+                                    class="ml-sm-2 badge badge-warning">{{ d[9] }}</a></p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <br/>
+            {% endfor %}
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="../static/js/popper.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -31,11 +31,24 @@
 
         <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
             <h1>Users: {{ profile_name }}{% if current_user.is_authenticated %}
-                <form style="display:inline;" action="{{ url_for('ban') }}" method="post"><input type="text" name="to_ban" value="{{ profile_id }}" hidden><input class="btn btn-danger mr-sm-2" type="submit" value="Block"/>
+                {% if current_user.is_authenticated %}
+                    {% if f %}
+                        <button type="button" class="btn btn-primary mr-sm-2" onclick="unfollow()">Unfollow</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary mr-sm-2" onclick="follow()">Follow</button>
+                    {% endif %}
+                {% endif %}
+                <form style="display:inline;" action="{{ url_for('ban') }}" method="post"><input type="text"
+                                                                                                 name="to_ban"
+                                                                                                 value="{{ profile_id }}"
+                                                                                                 hidden><input
+                        class="btn btn-danger mr-sm-2" type="submit" value="Block"/>
                 </form>
                 {% if current_user.data[4] >= 1 %}
                     <button type="button" class="btn btn-warning mr-sm-2">Promote</button>{% endif %}
-                <a href="{{ url_for("dm",id=profile_id) }}"><button type="button" class="btn btn-light mr-sm-2">Send Message</button></a>
+                <a href="{{ url_for("dm",id=profile_id) }}">
+                    <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
+                </a>
             {% endif %}</h1>
         </main>
     </div>
@@ -44,14 +57,28 @@
 <!-- Bootstrap core JavaScript
   ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
-<script>
-    window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')
-</script>
 <script src="../static/js/popper.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
+<script>
+    function follow() {
+        jQuery.post("{{ url_for("follow") }}", {
+            id: {{ profile_id }}
+        }, function () {
+            location.reload();
+        });
+    }
 
+
+    function unfollow() {
+        jQuery.post("{{ url_for("unfollow") }}", {
+            id: {{ profile_id }}
+        }, function () {
+            location.reload();
+        });
+    }
+</script>
 </html>
