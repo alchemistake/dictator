@@ -114,7 +114,25 @@ def post(post_id):
         , (post_id,))
     a = cur.fetchall()
     print a
-    return render_template("comment.html", topics=topics, d=d, a=a)
+    return render_template("comment.html", post_id=post_id, topics=topics, d=d, a=a)
+
+
+@app.route('/comments/<post_id>-<comm_id>')
+def comments(post_id, comm_id):
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+
+    cur.execute(
+        """select * from definition,"user" where definition_id=%s AND definer_user=user_id""",
+        (comm_id,))
+    d = cur.fetchone()
+
+    cur.execute(
+        """select * from definition,"user" where definition_id in (select comment_id from reply where replied_comment=%s) AND definer_user=user_id"""
+        , (comm_id,))
+    a = cur.fetchall()
+    print a
+    return render_template("comments.html", post_id=post_id, topics=topics, d=d, a=a)
 
 
 @app.route('/messages')
@@ -200,16 +218,14 @@ def add_def():
 @app.route('/like', methods=["POST"])
 @login_required
 def like():
-    print "asdasdasd"
-    cur.execute("""UPDATE post SET like_value = like_value + 1 WHERE post_id = %s;COMMIT;""", (request.form["id"],))
+    cur.execute("""insert into rate values(%s,%s,1,0);COMMIT;""", (current_user.data[0], request.form["id"]))
     return ""
 
 
 @app.route('/dislike', methods=["POST"])
 @login_required
 def dislike():
-    cur.execute("""UPDATE post SET dislike_value = dislike_value + 1 WHERE post_id = %s;COMMIT;""",
-                (request.form["id"],))
+    cur.execute("""insert into rate values(%s,%s,0,1);COMMIT;""", (current_user.data[0], request.form["id"]))
     return ""
 
 
@@ -220,6 +236,18 @@ def comment():
                     insert into comment(comment_id, post_id) values (currval('definition_definition_id_seq'), %s);
                     COMMIT ;""",
                 (datetime.now(), request.form["comment"], current_user.data[0], request.form["post_id"]))
+    return ""
+
+
+@app.route("/reply", methods=["POST"])
+@login_required
+def reply():
+    cur.execute(""" insert into definition(definition_date, definition, definer_user) values (%s, %s, %s);
+                    insert into comment(comment_id, post_id) values (currval('definition_definition_id_seq'), %s);
+                    insert into reply values(currval('definition_definition_id_seq'), %s);
+                    COMMIT ;""",
+                (datetime.now(), request.form["comment"], current_user.data[0], request.form["post_id"],
+                 request.form["replying"]))
     return ""
 
 
@@ -236,6 +264,13 @@ def follow():
 def unfollow():
     cur.execute("""DELETE from follow where follower=%s and followed=%s;COMMIT;""",
                 (current_user.data[0], request.form["id"]))
+    return ""
+
+
+@app.route("/promote", methods=["POST"])
+@login_required
+def promote():
+    cur.execute("insert into propose values(%s,%s);COMMIT;", request.form["id"], current_user.data[0])
     return ""
 
 

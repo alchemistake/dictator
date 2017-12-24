@@ -78,7 +78,8 @@ cur.execute("""CREATE TABLE enter
 cur.execute("""CREATE TABLE rate
 (user_id		INT,
  post_id        INT,
- vote           INT,
+ "like"           INT,
+ dislike           INT,
  PRIMARY KEY(user_id, post_id),
  FOREIGN KEY(user_id) references "user"(user_id),
  FOREIGN KEY(post_id) references post(post_id));""")
@@ -93,6 +94,18 @@ cur.execute("""CREATE TABLE reply
  replied_comment  INT,
  PRIMARY KEY(comment_id),
  FOREIGN KEY(comment_id) REFERENCES comment(comment_id),
- FOREIGN KEY(replied_comment) REFERENCES post(post_id));""")
-
+ FOREIGN KEY(replied_comment) REFERENCES comment(comment_id));""")
+cur.execute("""CREATE UNIQUE INDEX user_name_index ON "user"(user_nickname);
+CREATE UNIQUE INDEX topic_name_index ON topic(topic_name);
+CREATE UNIQUE INDEX definition_id_index ON definition(definition_id);""")
+cur.execute("""CREATE OR REPLACE FUNCTION updater() RETURNS TRIGGER AS $example_table$
+   BEGIN
+      update post
+		set like_value = like_value + new.like,
+		dislike_value = dislike_value + new.dislike
+		where post_id = new.post_id;
+      RETURN NEW;
+   END;
+$example_table$ LANGUAGE plpgsql;""")
+cur.execute("""create trigger rate_update after insert on rate for each row execute PROCEDURE updater();""")
 cur.execute("""COMMIT;""")

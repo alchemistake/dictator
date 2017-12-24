@@ -45,7 +45,7 @@
                         class="btn btn-danger mr-sm-2" type="submit" value="Block"/>
                 </form>
                 {% if current_user.data[4] >= 1 %}
-                    <button type="button" class="btn btn-warning mr-sm-2">Promote</button>{% endif %}
+                    <button type="button" class="btn btn-warning mr-sm-2" onclick="promote()">Promote</button>{% endif %}
                 <a href="{{ url_for("dm",id=profile_id) }}">
                     <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
                 </a>
@@ -75,6 +75,14 @@
 
     function unfollow() {
         jQuery.post("{{ url_for("unfollow") }}", {
+            id: {{ profile_id }}
+        }, function () {
+            location.reload();
+        });
+    }
+
+    function promote() {
+        jQuery.post("{{ url_for("promote") }}", {
             id: {{ profile_id }}
         }, function () {
             location.reload();

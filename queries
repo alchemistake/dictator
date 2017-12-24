@@ -1,4 +1,4 @@
-Database Features 
+Database Features
 Secondary Indices: give your statement or GUI snapshot (i.e., from MSSQL server index creation window) that explicitly shows what indices are created on what field of the tables.
 During the demo, we will verify the existence of these indices either using DBMS GUI or commands (e.g, MySQL’s “Show Index” command).
 
@@ -48,7 +48,8 @@ referencing old row as old_row
 for each row
 	begin 
 		update post
-		set rate_value =old_row.rate_value + new_row.vote	
+		set like_value =old_row.like_value + new_row.like,
+		dislike_value =old_row.dislike_value + new_row.dislike
 		where post_id =old_row.post_id
 	end
 
