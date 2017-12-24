@@ -47,40 +47,12 @@
                     <div class="clearfix"></div>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
+                        <input id="{{ d[0] }}" type="text" class="form-control"
+                               aria-label="Text input with segmented button dropdown">
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary">Comment</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div class="card">
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum id sem vel luctus. Phasellus
-                    et metus luctus, eleifend eros in, pretium ex. Donec eget ante eleifend, convallis enim sit amet,
-                    porta magna. Nullam semper elit in turpis dictum aliquet.
-                    Sed scelerisque urna sed semper consequat. Suspendisse pulvinar, leo at bibendum venenatis, nisi
-                    risus sollicitudin nunc, vitae ultrices sem arcu at neque. Cras erat metus, ultrices ac vehicula
-                    vel, interdum id orci. Mauris nec felis et lorem
-                    faucibus imperdiet.
-                </div>
-                <div class="card-header">
-                    <div class="pull-left">
-                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> 10000
-                        <i class="fa fa-thumbs-down" aria-hidden="true"></i> 200
-                    </div>
-                    <div class="pull-right">
-                        <p class="font-italic text-right">24.08.2006 17:33 <a href="#"
-                                                                              class="ml-sm-2 badge badge-warning">mr.
-                            sir alchemistake</a></p>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <div class="input-group">
-                        <input type="text" class="form-control" aria-label="Text input with segmented button dropdown">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-primary">Comment</button>
+                            <button type="button" class="btn btn-primary" onclick="send_comment({{ d[0] }})">
+                                Comment
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -88,30 +60,32 @@
             <br/>
 
             <div class="row">
-                <div class="col-11 offset-1">
-                    <div class="card">
-                        <div class="card-body">
-                            Nam sem lectus, mollis eu eros sit amet, vulputate consequat sem. Nunc non nibh
-                            pellentesque, elementum velit ut, tincidunt urna.
-                        </div>
-                        <div class="card-header">
-                            <div class="pull-right">
-                                <p class="font-italic text-right">24.08.2006 18:23 <a href="#"
-                                                                                      class="ml-sm-2 badge badge-warning">rümeyza
-                                    reiz</a></p>
+                {% for level1 in a %}
+                    <div class="col-11 offset-1">
+                        <div class="card">
+                            <div class="card-body">{{ level1[3] }}
                             </div>
-                            <div class="clearfix"></div>
+                            <div class="card-header">
+                                <div class="pull-right">
+                                    <p class="font-italic text-right">{{ level1[1] }} <a
+                                            href="{{ url_for("profile", profile_id=level1[2]) }}"
+                                            class="ml-sm-2 badge badge-warning">{{ level1[5] }}</a></p>
+                                </div>
+                                <div class="clearfix"></div>
 
-                            <div class="input-group">
-                                <input type="text" class="form-control"
-                                       aria-label="Text input with segmented button dropdown">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-primary">Comment</button>
+                                <div class="input-group">
+                                    <input type="text" class="form-control"
+                                           aria-label="Text input with segmented button dropdown">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-primary">Comment</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <br/>
                     </div>
-                </div>
+                {% endfor %}
             </div>
             <br/>
 
@@ -177,14 +151,21 @@
 <!-- Bootstrap core JavaScript
   ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
-<script>
-    window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')
-</script>
 <script src="../static/js/popper.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
+<script>
+    function send_comment(id) {
+        $.post("{{ url_for("comment") }}", {
+            comment: document.getElementById(id).value,
+            post_id: id
+        }, function () {
+            location.reload();
+        });
+    }
+</script>
 
 </html>

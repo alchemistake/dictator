@@ -104,22 +104,46 @@ def post(post_id):
         """select * from definition,post,"user" where post_id=%s AND definition_id=post_id AND definer_user=user_id""",
         (post_id,))
     d = cur.fetchone()
-    return render_template("comment.html", topics=topics, d=d)
+
+    cur.execute(
+        """select * from definition,"user" where definition_id in (select comment_id from comment where post_id=%s) AND definer_user=user_id"""
+        , (post_id,))
+    a = cur.fetchall()
+    print a
+    return render_template("comment.html", topics=topics, d=d, a=a)
 
 
-#
-#
-# @app.route('/messages')
-# @login_required
-# def messages():
-#     pass
-#
-#
-# @app.route('/following')
-# @login_required
-# def following():
-#     pass
-#
+@app.route('/messages')
+@login_required
+def messages():
+    return ""
+
+
+@app.route('/dm/<id>', methods=["GET", "POST"])
+@login_required
+def dm(id):
+    if request.method == "POST":
+        cur.execute("""insert into directMessage(message,sender_user,receiver_user) values (%s,%s,%s);commit;""",
+                    request.form["message"], current_user.data[0], id)
+        return ""
+    cur.execute(
+        """ select * from directMessage,"user" AS u1, "user" AS u2
+            where (sender_user=%s and receiver_user=%s) or (sender_user=%s and receiver_user=%s)
+            and u1.user_id=sender_user and u2.user_id=receiver_user;""",
+        id, current_user.data[0], current_user.data[0], id)
+    msgs = cur.fetchall()
+
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("dm.html", topics=topics, msgs=msgs)
+
+
+@app.route('/following')
+@login_required
+def following():
+    return ""
+
+
 @app.route('/ban', methods=["POST"])
 @login_required
 def ban():
@@ -171,6 +195,16 @@ def like():
 def dislike():
     cur.execute("""UPDATE post SET dislike_value = dislike_value + 1 WHERE post_id = %s;COMMIT;""",
                 (request.form["id"],))
+    return ""
+
+
+@app.route("/comment", methods=["POST"])
+@login_required
+def comment():
+    cur.execute(""" insert into definition(definition_date, definition, definer_user) values (%s, %s, %s);
+                    insert into comment(comment_id, post_id) values (currval('definition_definition_id_seq'), %s);
+                    COMMIT ;""",
+                (datetime.now(), request.form["comment"], current_user.data[0], request.form["post_id"]))
     return ""
 
 
