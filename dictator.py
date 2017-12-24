@@ -113,7 +113,7 @@ def post(post_id):
     d = cur.fetchone()
 
     cur.execute(
-        """select * from definition,"user" where definition_id in (select comment_id from comment where post_id=%s) AND definer_user=user_id"""
+        """select * from definition,"user" where definition_id in (select comment_id from comment where post_id=%s) AND definition_id not in (select comment_id from reply) AND definer_user=user_id"""
         , (post_id,))
     a = cur.fetchall()
     print a
@@ -160,9 +160,9 @@ def dm(id):
                     (request.form["message"], current_user.data[0], id))
         return ""
     cur.execute(
-        """ select DISTINCT * from directMessage,"user"
-            where (sender_user=%s and receiver_user=%s) or (sender_user=%s and receiver_user=%s)
-            and user_id=sender_user""",
+        """ select * from directMessage,"user"
+            where user_id=sender_user and ((sender_user=%s and receiver_user=%s) or (sender_user=%s and receiver_user=%s))
+            """,
         (id, current_user.data[0], current_user.data[0], id))
     msgs = cur.fetchall()
     cur.execute("select * from topic order by topic_id desc limit 10;")
@@ -321,8 +321,8 @@ def a_search():
 
     if request.method == "POST":
         cur.execute("""select * from topic where topic_date BETWEEN %s and %s;""", (
-        date(int(request.form["start_y"]), int(request.form["start_m"]), int(request.form["start_d"])),
-        date(int(request.form["end_y"]), int(request.form["end_m"]), int(request.form["end_d"]))))
+            date(int(request.form["start_y"]), int(request.form["start_m"]), int(request.form["start_d"])),
+            date(int(request.form["end_y"]), int(request.form["end_m"]), int(request.form["end_d"]))))
         result = cur.fetchall()
 
         return render_template("search.html", topics=topics, result=result)

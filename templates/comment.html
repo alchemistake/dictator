@@ -110,6 +110,15 @@
             location.reload();
         });
     }
+
+    function send_comment(id) {
+        $.post("{{ url_for("comment") }}", {
+            comment: document.getElementById(id).value,
+            post_id: id
+        }, function () {
+            location.reload();
+        });
+    }
 </script>
 
 </html>
