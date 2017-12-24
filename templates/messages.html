@@ -24,6 +24,7 @@
 {% else %}
     {% include  'navbar_not_logged_in.html' %}
 {% endif %}
+
 <div class="container-fluid">
     <div class="row">
         {% include  'sidebar.html' %}
@@ -31,7 +32,7 @@
         <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
             {% for m in msgs %}
             <div class="card">
-                <div class="card-body">{{ m[1].strip() }}
+                <div class="card-body" onclick="location.href='{{ url_for("dm", id=m[4]) }}';">{{ m[1].strip() }}
                 </div>
                 <div class="card-header">
                     <div class="pull-right">
@@ -42,18 +43,6 @@
             </div>
             <br/>
             {% endfor %}
-            <div class="card">
-                <div class="card-body" contenteditable="true" id="message">
-                    Write your message here
-                </div>
-                <div class="card-header">
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-primary" onclick="send_message()">Send</button>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-            <br/>
         </main>
     </div>
 </div>
@@ -61,19 +50,14 @@
 <!-- Bootstrap core JavaScript
   ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
+<script>
+    window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')
+</script>
 <script src="../static/js/popper.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 </body>
-<script>
-    function send_message() {
-        jQuery.post("{{ url_for("dm", id=id) }}", {
-            message: document.getElementById("message").innerHTML
-        }, function () {
-            location.reload();
-        });
-    }
-</script>
+
 </html>

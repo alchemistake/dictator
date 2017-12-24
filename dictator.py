@@ -116,7 +116,15 @@ def post(post_id):
 @app.route('/messages')
 @login_required
 def messages():
-    return ""
+    cur.execute(
+        """ select * from directMessage,"user"
+            where message_id in(select max(message_id) from directMessage where receiver_user=%s group by sender_user)
+                and user_id=sender_user""",
+        (current_user.data[0],))
+    msgs = cur.fetchall()
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("messages.html", topics=topics, msgs=msgs)
 
 
 @app.route('/dm/<id>', methods=["GET", "POST"])
@@ -124,18 +132,17 @@ def messages():
 def dm(id):
     if request.method == "POST":
         cur.execute("""insert into directMessage(message,sender_user,receiver_user) values (%s,%s,%s);commit;""",
-                    request.form["message"], current_user.data[0], id)
+                    (request.form["message"], current_user.data[0], id))
         return ""
     cur.execute(
-        """ select * from directMessage,"user" AS u1, "user" AS u2
+        """ select DISTINCT * from directMessage,"user"
             where (sender_user=%s and receiver_user=%s) or (sender_user=%s and receiver_user=%s)
-            and u1.user_id=sender_user and u2.user_id=receiver_user;""",
-        id, current_user.data[0], current_user.data[0], id)
+            and user_id=sender_user""",
+        (id, current_user.data[0], current_user.data[0], id))
     msgs = cur.fetchall()
-
     cur.execute("select * from topic order by topic_id desc limit 10;")
     topics = cur.fetchall()
-    return render_template("dm.html", topics=topics, msgs=msgs)
+    return render_template("dm.html", topics=topics, msgs=msgs, id=id)
 
 
 @app.route('/following')

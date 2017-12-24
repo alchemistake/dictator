@@ -35,7 +35,7 @@
                 </form>
                 {% if current_user.data[4] >= 1 %}
                     <button type="button" class="btn btn-warning mr-sm-2">Promote</button>{% endif %}
-                <button type="button" class="btn btn-light mr-sm-2">Send Message</button>
+                <a href="{{ url_for("dm",id=profile_id) }}"><button type="button" class="btn btn-light mr-sm-2">Send Message</button></a>
             {% endif %}</h1>
         </main>
     </div>

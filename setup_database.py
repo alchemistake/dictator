@@ -33,7 +33,7 @@ cur.execute("""CREATE TABLE propose
  FOREIGN KEY(proposed) REFERENCES "user"(user_id), 
  FOREIGN KEY(proposer) REFERENCES "user"(user_id));""")
 cur.execute("""CREATE TABLE directMessage
-(message_id		INT ,
+(message_id		serial ,
  message		VARCHAR(256) NOT NULL,
  sender_user	INT NOT NULL,
  receiver_user	INT NOT NULL,
