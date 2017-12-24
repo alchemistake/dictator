@@ -300,6 +300,20 @@ def report():
         most_interactive_user[1])
 
 
+@app.route("/search", methods=["POST"])
+def search():
+    cur.execute("""select * 
+from topic
+where topic_name like %s;""", ('%' + request.form["query"] + '%',))
+    result = cur.fetchall()
+    print result
+
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+
+    return render_template("search.html", topics=topics, result=result)
+
+
 if __name__ == '__main__':
     app.debug = True
     app.secret_key = "dictatordictator"
