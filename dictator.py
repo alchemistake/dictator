@@ -38,8 +38,10 @@ def root():
     cur.execute("select * from topic order by topic_id desc limit 10;")
     topics = cur.fetchall()
 
-    cur.execute("""select * from definition,post,"user" where post_id=definition_id and definer_user=user_id;""")
+    cur.execute(
+        """select * from definition NATURAL JOIN post NATURAL JOIN "user" NATURAL JOIN enter NATURAL JOIN topic where post_id=definition_id and definer_user=user_id;""")
     posts = cur.fetchall()
+    print posts
     return render_template("index.html", topics=topics, posts=posts)
 
 
@@ -47,10 +49,10 @@ def root():
 def login():
     if request.method == "POST":
         user = User.get(request.form["email"])
-        if user is not None:
+        if user is not None and user.data[3] == request.form["pass"]:
             login_user(user)
             return redirect(url_for("root"))
-    return render_template("login.html")
+    return render_template("login.html", error=(request.method == "POST"))
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -177,7 +179,9 @@ def following():
 from definition,post,"user" where definition_id=post_id and user_id=definer_user and definer_user in (select followed from follow where follower=%s) order by definition_id desc""",
                 (current_user.data[0],))
     defs = cur.fetchall()
-    return render_template("following.html", defs=defs)
+    cur.execute("select * from topic order by topic_id desc limit 10;")
+    topics = cur.fetchall()
+    return render_template("following.html", defs=defs, topics=topics)
 
 
 @app.route('/ban', methods=["POST"])
@@ -221,14 +225,26 @@ def add_def():
 @app.route('/like', methods=["POST"])
 @login_required
 def like():
-    cur.execute("""insert into rate values(%s,%s,1,0);COMMIT;""", (current_user.data[0], request.form["id"]))
+    try:
+        global cur
+        cur.execute("""insert into rate values(%s,%s,1,0);COMMIT;""", (current_user.data[0], request.form["id"]))
+    except:
+        conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
+        cur = conn.cursor()
+        return "You already voted"
     return ""
 
 
 @app.route('/dislike', methods=["POST"])
 @login_required
 def dislike():
-    cur.execute("""insert into rate values(%s,%s,0,1);COMMIT;""", (current_user.data[0], request.form["id"]))
+    try:
+        global cur
+        cur.execute("""insert into rate values(%s,%s,0,1);COMMIT;""", (current_user.data[0], request.form["id"]))
+    except:
+        conn = psycopg2.connect("dbname='postgres' user='Alchemistake'  password='C4NB3GVMA'")
+        cur = conn.cursor()
+        return "You already voted"
     return ""
 
 
@@ -286,8 +302,7 @@ def logout():
 
 @app.route('/report')
 def report():
-    cur.execute("""WITH latest_topics AS (SELECT * FROM topic WHERE topic_date = (SELECT MAX (topic_date) FROM topic)),
-                        topic_rates AS (SELECT topic_id, SUM(like_value+dislike_value) AS sum_rate FROM latest_topics NATURAL JOIN post GROUP BY topic_id)
+    cur.execute("""WITH topic_rates AS (SELECT topic_id, SUM(like_value+dislike_value) AS sum_rate FROM topic NATURAL JOIN post GROUP BY topic_id)
                         SELECT * FROM  topic_rates NATURAL JOIN topic WHERE sum_rate = (SELECT MAX(sum_rate) FROM topic_rates)""")
     most_interactive_topic = cur.fetchone()
 
@@ -338,8 +353,19 @@ def change_pass():
     return redirect(url_for("logout"))
 
 
+@app.route("/delete_post", methods=["POST"])
+@login_required
+def delete_post():
+    cur.execute(""" DELETE from rate where post_id=%s;
+                    DELETE from enter where post_id=%s;
+                    DELETE from post where post_id=%s;
+                    DELETE from definition where definition_id=%s;COMMIT;""",
+                (request.form["id"], request.form["id"], request.form["id"]))
+    return ""
+
+
 if __name__ == '__main__':
     app.debug = True
     app.secret_key = "dictatordictator"
-    app.run()  # Local Host
-    # app.run(host='0.0.0.0')  # Local IP
+    # app.run()  # Local Host
+    app.run(host='0.0.0.0')  # Local IP

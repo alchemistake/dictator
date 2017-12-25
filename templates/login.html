@@ -18,6 +18,11 @@
 <div class="container">
 
     <form class="form-signin" method="post" action="{{ url_for('login') }}">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                False Credentials
+            </div>
+        {% endif %}
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputEmail" class="sr-only">Email address</label>
         <input type="text" name="email" id="inputEmail" class="form-control" placeholder="Email address" required

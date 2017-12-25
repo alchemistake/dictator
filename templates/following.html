@@ -43,7 +43,7 @@
                         <div class="pull-right">
                             <p class="font-italic text-right">{{ d[1] }} <a
                                     href="{{ url_for("profile", profile_id=d[2]) }}"
-                                    class="ml-sm-2 badge badge-warning">{{ d[9] }}</a></p>
+                                    class="ml-sm-2 badge badge-warning">{{ d[8] }}</a></p>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -68,16 +68,24 @@
     function like(post) {
         jQuery.post("{{ url_for("like") }}", {
             id: post
-        }, function () {
-            location.reload();
+        }, function (data) {
+            if (data !== "") {
+                alert(data);
+            } else {
+                location.reload();
+            }
         });
     }
 
     function dislike(post) {
         jQuery.post("{{ url_for("dislike") }}", {
             id: post
-        }, function () {
-            location.reload();
+        }, function (data) {
+            if (data !== "") {
+                alert(data);
+            } else {
+                location.reload();
+            }
         });
     }
 </script>

@@ -60,10 +60,13 @@
                             <a onclick="dislike({{ d[0] }})"><i class="fa fa-thumbs-down"
                                                                 aria-hidden="true"></i></a> {{ d[6] }}
                         </div>
+                        {% if current_user.is_authenticated and current_user.data[0] == d[2] %}
+                                <p class="ml-sm-2 badge badge-warning" onclick="delete_post({{ d[0] }})">DELETE</p>
+                            {% endif %}
                         <div class="pull-right">
                             <p class="font-italic text-right">{{ d[1] }} <a
                                     href="{{ url_for("profile", profile_id=d[2]) }}"
-                                    class="ml-sm-2 badge badge-warning">{{ d[9] }}</a></p>
+                                    class="ml-sm-2 badge badge-warning">{{ d[8] }}</a></p>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -103,16 +106,32 @@
     function like(post) {
         jQuery.post("{{ url_for("like") }}", {
             id: post
-        }, function () {
-            location.reload();
+        }, function (data) {
+            if (data !== "") {
+                alert(data);
+            } else {
+                location.reload();
+            }
         });
     }
 
     function dislike(post) {
         jQuery.post("{{ url_for("dislike") }}", {
             id: post
+        }, function (data) {
+            if (data !== "") {
+                alert(data);
+            } else {
+                location.reload();
+            }
+        });
+    }
+
+    function delete_post(post) {
+        jQuery.post("{{ url_for("delete_post") }}", {
+            id: post
         }, function () {
-            location.reload();
+                location.reload();
         });
     }
 </script>
